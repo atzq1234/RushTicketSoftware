@@ -59,5 +59,36 @@ namespace RushTicketSoftware.Common
             webRequest.CookieContainer = cookies;
             HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
         }
+
+        public static bool DoLogin(string points, string name, string password, CookieContainer cookies, Encoding charset)
+        {
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://kyfw.12306.cn/otn/login/loginAysnSuggest");
+            webRequest.CookieContainer = cookies;
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36";
+            webRequest.KeepAlive = true;
+            webRequest.Accept = "*/*";
+            webRequest.Referer = "https://kyfw.12306.cn/otn/login/init";
+            webRequest.Headers.Add("Accept-Encoding", "gzip, deflate");
+            webRequest.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8");
+            webRequest.Headers.Add("X-Requested-With", "XMLHttpRequest");
+            webRequest.Headers.Add("Origin", "https://kyfw.12306.cn");
+            //添加参数
+            StringBuilder buffer = new StringBuilder();
+            buffer.AppendFormat("loginUserDTO.user_name={0}&userDTO.password={1}&randCode={2}", name, password, points);
+            byte[] data = charset.GetBytes(buffer.ToString());
+            webRequest.ContentLength = data.Length;
+            using (Stream stream = webRequest.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
+
+            Stream respStream = httpResp.GetResponseStream();
+            StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+            string result = respStreamReader.ReadToEnd();
+            return false;
+        }
     }
 }

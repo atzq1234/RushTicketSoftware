@@ -36,7 +36,9 @@ namespace RushTicketSoftware
             //string name = this.tbName.Text;
             //string password = this.tbPassword.Text;
             //MessageBox.Show(string.Format("账号：{0} 密码：{1}", name, password));
-            var webResponse = RequestHelper.GetWebResponse("https://kyfw.12306.cn/otn/login/init", cookieContainer);
+            var strPoints = CommonHelper.GetPointsStr(_pointList);
+            RequestHelper.CheckValidatePic(strPoints, cookieContainer, Encoding.UTF8);
+            var webResponse = RequestHelper.DoLogin(strPoints, this.tbName.Text, this.tbPassword.Text, cookieContainer, Encoding.UTF8);
 
         }
 
@@ -62,13 +64,11 @@ namespace RushTicketSoftware
 
         private void btValidate_Click(object sender, EventArgs e)
         {
-            string points = string.Empty;
-            foreach (var point in _pointList)
-            {
-                points += string.Format("{0},{1},", point.X, point.Y);
-            }
-            points = points.Length > 0 ? points.Substring(0, points.Length - 1) : points;
+            var points = CommonHelper.GetPointsStr(_pointList);
             RequestHelper.CheckValidatePic(points, cookieContainer, Encoding.UTF8);
+            //this.btValiPic_Click(sender, e);
         }
+
+        
     }
 }

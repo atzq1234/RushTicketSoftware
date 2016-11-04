@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\CommonHelper.cs" />
     <Compile Include="Common\HttpRequestReader.cs" />
     <Compile Include="Common\RequestHelper.cs" />
     <Compile Include="Entites\PicPoint.cs" />
