@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\HttpRequestReader.cs" />
+    <Compile Include="Common\RequestHelper.cs" />
+    <Compile Include="Entites\PicPoint.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>

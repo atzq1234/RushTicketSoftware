@@ -1,4 +1,5 @@
-﻿namespace RushTicketSoftware
+﻿using System.Windows.Forms;
+namespace RushTicketSoftware
 {
     partial class LoginForm
     {
@@ -37,6 +38,7 @@
             this.tbPassword = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btValiPic = new System.Windows.Forms.Button();
+            this.btValidate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -108,6 +110,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(432, 293);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_Click);
             // 
             // btValiPic
             // 
@@ -119,11 +122,22 @@
             this.btValiPic.UseVisualStyleBackColor = true;
             this.btValiPic.Click += new System.EventHandler(this.btValiPic_Click);
             // 
+            // btValidate
+            // 
+            this.btValidate.Location = new System.Drawing.Point(420, 480);
+            this.btValidate.Name = "btValidate";
+            this.btValidate.Size = new System.Drawing.Size(75, 23);
+            this.btValidate.TabIndex = 5;
+            this.btValidate.Text = "验证";
+            this.btValidate.UseVisualStyleBackColor = true;
+            this.btValidate.Click += new System.EventHandler(this.btValidate_Click);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(548, 546);
+            this.Controls.Add(this.btValidate);
             this.Controls.Add(this.btValiPic);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tbPassword);
@@ -153,6 +167,7 @@
         private System.Windows.Forms.TextBox tbPassword;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btValiPic;
+        private Button btValidate;
     }
 }
 
