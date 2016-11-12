@@ -12,6 +12,8 @@ namespace RushTicketSoftware.Common
 {
     public class RequestHelper
     {
+        private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static HttpWebResponse GetWebResponse(string url, CookieContainer cookies)
         {
             ///HttpWebRequest类继承于WebRequest，并没有自己的构造函数，需通过WebRequest的Creat方法 建立，并进行强制的类型转换   
@@ -42,25 +44,34 @@ namespace RushTicketSoftware.Common
 
         public static bool CheckValidatePic(string points, CookieContainer cookies, Encoding charset)
         {
-            var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn", "POST", cookies, charset);
-            //添加参数
-            StringBuilder buffer = new StringBuilder();
-            buffer.AppendFormat("randCode={0}&rand=sjrand", points);
-            byte[] data = charset.GetBytes(buffer.ToString());
-            webRequest.ContentLength = data.Length;
-            using (Stream stream = webRequest.GetRequestStream())  
-            {  
-                stream.Write(data, 0, data.Length);
-            }
-            HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
+            try
+            {
+                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn", "POST", cookies, charset);
+                //添加参数
+                StringBuilder buffer = new StringBuilder();
+                buffer.AppendFormat("randCode={0}&rand=sjrand", points);
+                byte[] data = charset.GetBytes(buffer.ToString());
+                webRequest.ContentLength = data.Length;
+                using (Stream stream = webRequest.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+                HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
 
-            Stream respStream = httpResp.GetResponseStream(); 
-            StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
-            string result = respStreamReader.ReadToEnd();
-            var loginValiPicResponse = JsonConvert.DeserializeObject<LoginValiPicResponse>(result);
-            if (loginValiPicResponse != null && loginValiPicResponse.status && loginValiPicResponse.data != null && loginValiPicResponse.data.msg)
-                return true;
-            return false;
+                Stream respStream = httpResp.GetResponseStream();
+                StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+                string result = respStreamReader.ReadToEnd();
+                var loginValiPicResponse = JsonConvert.DeserializeObject<LoginValiPicResponse>(result);
+                if (loginValiPicResponse != null && loginValiPicResponse.status && loginValiPicResponse.data != null && loginValiPicResponse.data.msg)
+                    return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error("CheckValidatePic: 出错", ex);
+                return false;
+
+            }
         }
 
         public static void GetCookie(CookieContainer cookies)
@@ -73,25 +84,34 @@ namespace RushTicketSoftware.Common
 
         public static bool DoLogin(string points, string name, string password, CookieContainer cookies, Encoding charset)
         {
-            var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/login/loginAysnSuggest", "POST", cookies, charset);
-            //添加参数
-            StringBuilder buffer = new StringBuilder();
-            buffer.AppendFormat("loginUserDTO.user_name={0}&userDTO.password={1}&randCode={2}", name, password, points);
-            byte[] data = charset.GetBytes(buffer.ToString());
-            webRequest.ContentLength = data.Length;
-            using (Stream stream = webRequest.GetRequestStream())
+            try
             {
-                stream.Write(data, 0, data.Length);
-            }
-            HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
+                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/login/loginAysnSuggest", "POST", cookies, charset);
+                //添加参数
+                StringBuilder buffer = new StringBuilder();
+                buffer.AppendFormat("loginUserDTO.user_name={0}&userDTO.password={1}&randCode={2}", name, password, points);
+                byte[] data = charset.GetBytes(buffer.ToString());
+                webRequest.ContentLength = data.Length;
+                using (Stream stream = webRequest.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+                HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
 
-            Stream respStream = httpResp.GetResponseStream();
-            StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
-            string result = respStreamReader.ReadToEnd();
-            var loginSuggestResponse = JsonConvert.DeserializeObject<LoginSuggestResponse>(result);
-            if (loginSuggestResponse != null && loginSuggestResponse.status && loginSuggestResponse.data != null && loginSuggestResponse.data.loginCheck == "Y")
-                return true;
-            return false;
-        }
+                Stream respStream = httpResp.GetResponseStream();
+                StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+                string result = respStreamReader.ReadToEnd();
+                var loginSuggestResponse = JsonConvert.DeserializeObject<LoginSuggestResponse>(result);
+                if (loginSuggestResponse != null && loginSuggestResponse.status && loginSuggestResponse.data != null && loginSuggestResponse.data.loginCheck == "Y")
+                    return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error("DoLogin: 出错", ex);
+                return false;
+
+            }
+}
     }
 }

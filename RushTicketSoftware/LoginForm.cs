@@ -16,6 +16,9 @@ namespace RushTicketSoftware
 {
     public partial class LoginForm : Form
     {
+
+        private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private static List<PicPoint> _pointList = new List<PicPoint>();
         private static CookieContainer cookieContainer = new CookieContainer();
 
@@ -29,6 +32,7 @@ namespace RushTicketSoftware
             //this.btValiPic_Click(sender, e);
             RequestHelper.GetCookie(cookieContainer);
             this.btValiPic_Click(sender, e);
+            log.Info("进入程序");
         }
 
         private void btLogin_Click(object sender, EventArgs e)
@@ -50,10 +54,12 @@ namespace RushTicketSoftware
             //校验验证码与验证账号密码
             if (RequestHelper.CheckValidatePic(strPoints, cookieContainer, Encoding.UTF8) && RequestHelper.DoLogin(strPoints, this.tbName.Text, this.tbPassword.Text, cookieContainer, Encoding.UTF8))
             {
+                log.Info("登录成功");
                 MessageBox.Show("登录成功");
             }
             else
             {
+                log.Info("登录失败");
                 MessageBox.Show("登录失败");
             }
 
@@ -66,7 +72,6 @@ namespace RushTicketSoftware
 
         private void btValiPic_Click(object sender, EventArgs e)
         {
-
             var webResponse = RequestHelper.GetWebResponse("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand", cookieContainer);
             Stream picStream = webResponse.GetResponseStream();
             Bitmap sourcebm = new Bitmap(picStream);//初始化Bitmap图片
@@ -84,10 +89,12 @@ namespace RushTicketSoftware
             var points = CommonHelper.GetPointsStr(_pointList);
             if (RequestHelper.CheckValidatePic(points, cookieContainer, Encoding.UTF8))
             {
+                log.Info("验证成功");
                 MessageBox.Show("验证成功");
             }
             else
             {
+                log.Info("验证失败");
                 MessageBox.Show("验证失败");
                 this.btValiPic_Click(sender, e);
             }
