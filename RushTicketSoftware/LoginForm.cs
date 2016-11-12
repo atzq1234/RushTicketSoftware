@@ -33,12 +33,29 @@ namespace RushTicketSoftware
 
         private void btLogin_Click(object sender, EventArgs e)
         {
-            //string name = this.tbName.Text;
-            //string password = this.tbPassword.Text;
+            string name = this.tbName.Text;
+            string password = this.tbPassword.Text;
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("用户名不能为空");
+                return;
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("密码不能为空");
+                return;
+            }
             //MessageBox.Show(string.Format("账号：{0} 密码：{1}", name, password));
             var strPoints = CommonHelper.GetPointsStr(_pointList);
-            RequestHelper.CheckValidatePic(strPoints, cookieContainer, Encoding.UTF8);
-            var webResponse = RequestHelper.DoLogin(strPoints, this.tbName.Text, this.tbPassword.Text, cookieContainer, Encoding.UTF8);
+            //校验验证码与验证账号密码
+            if (RequestHelper.CheckValidatePic(strPoints, cookieContainer, Encoding.UTF8) && RequestHelper.DoLogin(strPoints, this.tbName.Text, this.tbPassword.Text, cookieContainer, Encoding.UTF8))
+            {
+                MessageBox.Show("登录成功");
+            }
+            else
+            {
+                MessageBox.Show("登录失败");
+            }
 
         }
 
@@ -65,7 +82,15 @@ namespace RushTicketSoftware
         private void btValidate_Click(object sender, EventArgs e)
         {
             var points = CommonHelper.GetPointsStr(_pointList);
-            RequestHelper.CheckValidatePic(points, cookieContainer, Encoding.UTF8);
+            if (RequestHelper.CheckValidatePic(points, cookieContainer, Encoding.UTF8))
+            {
+                MessageBox.Show("验证成功");
+            }
+            else
+            {
+                MessageBox.Show("验证失败");
+                this.btValiPic_Click(sender, e);
+            }
             //this.btValiPic_Click(sender, e);
         }
 
