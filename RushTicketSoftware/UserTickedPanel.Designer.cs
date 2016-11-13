@@ -36,11 +36,17 @@
             this.cbArriveCity = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tbStartDate = new System.Windows.Forms.TextBox();
-            this.listView1 = new System.Windows.Forms.ListView();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btTicketVali = new System.Windows.Forms.Button();
             this.btQuit = new System.Windows.Forms.Button();
+            this.dgvTicketList = new System.Windows.Forms.DataGridView();
+            this.TrainCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StartStation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndStation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StartTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EndTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTicketList)).BeginInit();
             this.SuspendLayout();
             // 
             // btTicketSearch
@@ -51,6 +57,7 @@
             this.btTicketSearch.TabIndex = 0;
             this.btTicketSearch.Text = "查询";
             this.btTicketSearch.UseVisualStyleBackColor = true;
+            this.btTicketSearch.Click += new System.EventHandler(this.btTicketSearch_Click);
             // 
             // label1
             // 
@@ -110,14 +117,6 @@
             this.tbStartDate.Size = new System.Drawing.Size(148, 25);
             this.tbStartDate.TabIndex = 7;
             // 
-            // listView1
-            // 
-            this.listView1.Location = new System.Drawing.Point(45, 84);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(840, 305);
-            this.listView1.TabIndex = 8;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(279, 428);
@@ -145,15 +144,61 @@
             this.btQuit.UseVisualStyleBackColor = true;
             this.btQuit.Click += new System.EventHandler(this.btQuit_Click);
             // 
+            // dgvTicketList
+            // 
+            this.dgvTicketList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTicketList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.TrainCode,
+            this.StartStation,
+            this.EndStation,
+            this.StartTime,
+            this.EndTime});
+            this.dgvTicketList.Location = new System.Drawing.Point(45, 83);
+            this.dgvTicketList.Name = "dgvTicketList";
+            this.dgvTicketList.RowTemplate.Height = 27;
+            this.dgvTicketList.Size = new System.Drawing.Size(700, 314);
+            this.dgvTicketList.TabIndex = 12;
+            this.dgvTicketList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // TrainCode
+            // 
+            this.TrainCode.DataPropertyName = "station_train_code";
+            this.TrainCode.HeaderText = "车次";
+            this.TrainCode.Name = "TrainCode";
+            // 
+            // StartStation
+            // 
+            this.StartStation.DataPropertyName = "from_station_name";
+            this.StartStation.HeaderText = "出发站";
+            this.StartStation.Name = "StartStation";
+            // 
+            // EndStation
+            // 
+            this.EndStation.DataPropertyName = "to_station_name";
+            this.EndStation.HeaderText = "目的地";
+            this.EndStation.Name = "EndStation";
+            // 
+            // StartTime
+            // 
+            this.StartTime.DataPropertyName = "start_time";
+            this.StartTime.HeaderText = "出发时间";
+            this.StartTime.Name = "StartTime";
+            // 
+            // EndTime
+            // 
+            this.EndTime.DataPropertyName = "arrive_time";
+            this.EndTime.HeaderText = "到达时间";
+            this.EndTime.Name = "EndTime";
+            // 
             // UserTickedPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 646);
+            this.Controls.Add(this.dgvTicketList);
             this.Controls.Add(this.btQuit);
             this.Controls.Add(this.btTicketVali);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.listView1);
             this.Controls.Add(this.tbStartDate);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbArriveCity);
@@ -166,6 +211,7 @@
             this.Text = "UserTickedPanel";
             this.Load += new System.EventHandler(this.UserTickedPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTicketList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -181,9 +227,14 @@
         private System.Windows.Forms.ComboBox cbArriveCity;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbStartDate;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btTicketVali;
         private System.Windows.Forms.Button btQuit;
+        private System.Windows.Forms.DataGridView dgvTicketList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TrainCode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StartStation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EndStation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StartTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EndTime;
     }
 }

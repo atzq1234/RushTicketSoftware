@@ -64,11 +64,41 @@ namespace RushTicketSoftware
             this.cbStartCity.DataSource = stations2;
             this.cbStartCity.DisplayMember = "StationName";
             this.tbStartDate.Text = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+            this.dgvTicketList.AutoGenerateColumns = false;
         }
 
         private void btQuit_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void btTicketSearch_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, string> paramters = new Dictionary<string, string>();
+            paramters.Add("leftTicketDTO.train_date", this.tbStartDate.Text);
+            paramters.Add("leftTicketDTO.from_station", "BJP");
+            paramters.Add("leftTicketDTO.to_station", "AYF");
+            paramters.Add("purpose_codes", "ADULT");
+            string ticketJson = RequestHelper.GetHttpWebResult(string.Format("https://kyfw.12306.cn/otn/leftTicket/queryX?leftTicketDTO.train_date=2016-11-14&leftTicketDTO.from_station=BJP&leftTicketDTO.to_station=AYF&purpose_codes=ADULT"), "GET", LoginForm.cookieContainer, Encoding.UTF8, null, "https://kyfw.12306.cn/otn/leftTicket/init");
+            var trainTicketRespose = JsonHelper.JsonConvertToObject<TrainTicketRespose>(ticketJson);
+            
+            if (trainTicketRespose != null && trainTicketRespose.data != null && trainTicketRespose.data.Count > 0)
+            {
+                var sourceList = new List<TrainTicketBase>();
+                foreach (var ticketData in trainTicketRespose.data)
+                {
+                    if (ticketData.queryLeftNewDTO == null)
+                        continue;
+                    sourceList.Add(ticketData.queryLeftNewDTO);
+                }
+                this.dgvTicketList.DataSource = sourceList;
+            }
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

@@ -63,9 +63,11 @@
     <Compile Include="DTO\LoginSuggestResponse.cs" />
     <Compile Include="DTO\LoginValiPicResponse.cs" />
     <Compile Include="DTO\PassengerResponse.cs" />
+    <Compile Include="DTO\TrainTicketRespose.cs" />
     <Compile Include="Entites\Passenger.cs" />
     <Compile Include="Entites\PicPoint.cs" />
     <Compile Include="Entites\TrainStation.cs" />
+    <Compile Include="Entites\TrainTicket.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
