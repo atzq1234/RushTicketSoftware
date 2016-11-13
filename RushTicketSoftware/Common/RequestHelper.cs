@@ -138,10 +138,7 @@ namespace RushTicketSoftware.Common
                     }
                 }
                 HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
-
-                //Stream respStream = httpResp.GetResponseStream();
-                //StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
-                //string result = respStreamReader.ReadToEnd();
+                
                 string result = string.Empty;
                 string AcceptEncoding = httpResp.ContentEncoding;
                 if (AcceptEncoding.Contains("gzip"))

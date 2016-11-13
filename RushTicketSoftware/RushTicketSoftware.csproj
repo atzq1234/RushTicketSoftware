@@ -56,12 +56,16 @@
   <ItemGroup>
     <Compile Include="Common\CommonHelper.cs" />
     <Compile Include="Common\HttpRequestReader.cs" />
+    <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\RequestHelper.cs" />
     <Compile Include="Common\ZipHelper.cs" />
     <Compile Include="DTO\BaseTicketResponse.cs" />
     <Compile Include="DTO\LoginSuggestResponse.cs" />
     <Compile Include="DTO\LoginValiPicResponse.cs" />
+    <Compile Include="DTO\PassengerResponse.cs" />
+    <Compile Include="Entites\Passenger.cs" />
     <Compile Include="Entites\PicPoint.cs" />
+    <Compile Include="Entites\TrainStation.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
