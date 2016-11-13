@@ -20,7 +20,7 @@ namespace RushTicketSoftware
         private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static List<PicPoint> _pointList = new List<PicPoint>();
-        private static CookieContainer cookieContainer = new CookieContainer();
+        public static CookieContainer cookieContainer = new CookieContainer();
 
         public LoginForm()
         {
@@ -32,6 +32,8 @@ namespace RushTicketSoftware
             //this.btValiPic_Click(sender, e);
             RequestHelper.GetCookie(cookieContainer);
             this.btValiPic_Click(sender, e);
+            this.tbName.Text = "chen_peng7";
+            this.tbPassword.Text = "cp2290812";
             log.Info("进入程序");
         }
 
@@ -54,11 +56,19 @@ namespace RushTicketSoftware
             //校验验证码与验证账号密码
             if (RequestHelper.CheckValidatePic(strPoints, cookieContainer, Encoding.UTF8) && RequestHelper.DoLogin(strPoints, this.tbName.Text, this.tbPassword.Text, cookieContainer, Encoding.UTF8))
             {
+                var webResponse = RequestHelper.GetWebResponse("https://kyfw.12306.cn/otn/index/initMy12306", cookieContainer);
+                Stream respStream = webResponse.GetResponseStream();
+                StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+                string result = respStreamReader.ReadToEnd();
                 log.Info("登录成功");
                 MessageBox.Show("登录成功");
+                this.Hide();
+                var userTickedPanel = new UserTickedPanel();
+                userTickedPanel.Show();
             }
             else
             {
+                this.btValiPic_Click(sender, e);
                 log.Info("登录失败");
                 MessageBox.Show("登录失败");
             }
@@ -72,11 +82,18 @@ namespace RushTicketSoftware
 
         private void btValiPic_Click(object sender, EventArgs e)
         {
-            var webResponse = RequestHelper.GetWebResponse("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand", cookieContainer);
-            Stream picStream = webResponse.GetResponseStream();
-            Bitmap sourcebm = new Bitmap(picStream);//初始化Bitmap图片
-            this.pictureBox1.Image = sourcebm;
-            _pointList = new List<PicPoint>();
+            try
+            {
+                var webResponse = RequestHelper.GetWebResponse("https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand", cookieContainer);
+                Stream picStream = webResponse.GetResponseStream();
+                Bitmap sourcebm = new Bitmap(picStream);//初始化Bitmap图片
+                this.pictureBox1.Image = sourcebm;
+                _pointList = new List<PicPoint>();
+            }
+            catch (Exception ex)
+            {
+                log.Error("btValiPic_Click", ex);
+            }
         }
 
         private void pictureBox1_Click(object sender, MouseEventArgs e)

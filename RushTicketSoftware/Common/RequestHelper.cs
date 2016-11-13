@@ -25,7 +25,7 @@ namespace RushTicketSoftware.Common
             return httpResp;
         }
 
-        public static HttpWebRequest GetNewWebRequest(string url, string method, CookieContainer cookies, Encoding charset)
+        public static HttpWebRequest GetNewWebRequest(string url, string method, CookieContainer cookies, string referer = "https://kyfw.12306.cn/otn/login/init")
         {
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.CookieContainer = cookies;
@@ -34,7 +34,7 @@ namespace RushTicketSoftware.Common
             webRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36";
             webRequest.KeepAlive = true;
             webRequest.Accept = "*/*";
-            webRequest.Referer = "https://kyfw.12306.cn/otn/login/init";
+            webRequest.Referer = referer;
             webRequest.Headers.Add("Accept-Encoding", "gzip, deflate");
             webRequest.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8");
             webRequest.Headers.Add("X-Requested-With", "XMLHttpRequest");
@@ -46,7 +46,7 @@ namespace RushTicketSoftware.Common
         {
             try
             {
-                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn", "POST", cookies, charset);
+                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn", "POST", cookies);
                 //添加参数
                 StringBuilder buffer = new StringBuilder();
                 buffer.AppendFormat("randCode={0}&rand=sjrand", points);
@@ -86,7 +86,7 @@ namespace RushTicketSoftware.Common
         {
             try
             {
-                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/login/loginAysnSuggest", "POST", cookies, charset);
+                var webRequest = GetNewWebRequest("https://kyfw.12306.cn/otn/login/loginAysnSuggest", "POST", cookies);
                 //添加参数
                 StringBuilder buffer = new StringBuilder();
                 buffer.AppendFormat("loginUserDTO.user_name={0}&userDTO.password={1}&randCode={2}", name, password, points);
@@ -112,6 +112,65 @@ namespace RushTicketSoftware.Common
                 return false;
 
             }
-}
+        }
+
+        public static string GetHttpWebResult(string url, string method, CookieContainer cookies, Encoding charset, Dictionary<string, string> paramaters = null, string referer = "https://kyfw.12306.cn/otn/passengers/init")
+        {
+            try
+            {
+                var webRequest = GetNewWebRequest(url, method, cookies, referer);
+                //添加参数
+                if (paramaters != null && paramaters.Count > 0)
+                {
+                    StringBuilder buffer = new StringBuilder();
+                    string strParams = string.Empty;
+                    foreach (var item in paramaters)
+                    {
+                        strParams += string.Format("{0}={1}&", item.Key, item.Value);
+                    }
+                    strParams = string.IsNullOrEmpty(strParams) ? string.Empty : strParams.Substring(0, strParams.Length - 1);
+                    buffer.AppendFormat(strParams);
+                    byte[] data = charset.GetBytes(buffer.ToString());
+                    webRequest.ContentLength = data.Length;
+                    using (Stream stream = webRequest.GetRequestStream())
+                    {
+                        stream.Write(data, 0, data.Length);
+                    }
+                }
+                HttpWebResponse httpResp = (HttpWebResponse)webRequest.GetResponse();
+
+                //Stream respStream = httpResp.GetResponseStream();
+                //StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+                //string result = respStreamReader.ReadToEnd();
+                string result = string.Empty;
+                string AcceptEncoding = httpResp.ContentEncoding;
+                if (AcceptEncoding.Contains("gzip"))
+                {
+                    System.IO.Compression.GZipStream responseStream
+                    = new System.IO.Compression.GZipStream(httpResp.GetResponseStream(), System.IO.Compression.CompressionMode.Decompress);
+                    StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                    result = streamReader.ReadToEnd();
+                }
+                //else if (AcceptEncoding.Contains("deflate"))
+                //{
+                //    System.IO.Compression.DeflateStream responseStream
+                //    = new System.IO.Compression.DeflateStream(httpResp.GetResponseStream(), System.IO.Compression.CompressionMode.Decompress);
+                //    StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+                //    result = streamReader.ReadToEnd();
+                //}
+                else
+                {
+                    Stream respStream = httpResp.GetResponseStream();
+                    StreamReader respStreamReader = new StreamReader(respStream, Encoding.UTF8);
+                    result = respStreamReader.ReadToEnd();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                log.Error("GetHttpWebResult: 出错", ex);
+            }
+            return null;
+        }
     }
 }
